@@ -55,8 +55,6 @@ bot.action('addcanal', (ctx) => {
     ctx.scene.enter('add-canal');
 })
 
-//bot.command('addcanal', (ctx) => { addcanal(ctx);})
-
 bot.action('delete', (ctx) => {
     ctx.reply("Em construção ");
 })

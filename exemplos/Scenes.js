@@ -19,6 +19,7 @@ const addcanal = new Scenes.WizardScene(
     ctx => {
         ctx.wizard.state.data.idade = ctx.message.text;
         ctx.reply(`Seu nome é ${ctx.wizard.state.data.nome} \nSua idade é ${ctx.wizard.state.data.idade}`)
+        return ctx.scene.leave()
     }
 );
 
