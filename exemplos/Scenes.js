@@ -1,8 +1,6 @@
 const { Telegraf, Scenes, session} = require('telegraf');
- 
 require("dotenv").config();
-
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN_TEST);
 
 const addcanal = new Scenes.WizardScene(
     'add-canal',

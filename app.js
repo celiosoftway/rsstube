@@ -28,6 +28,7 @@ const helpmessage = `
   /find - Busca por videos novos manualmente
 `;
 
+// scenes para adicionar canais
 const canaladd = new Scenes.WizardScene(
     'add-canal',
     ctx => {
