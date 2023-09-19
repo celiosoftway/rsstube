@@ -88,7 +88,7 @@ bot.command('chatid', (ctx) => {
     console.log(ctx.message.from.id);
 });
 
-// comando start, envia uma mensagem em privato
+// comando start, envia uma mensagem em privado
 async function start(ctx) {
     const adm = await isAdmin(ctx.chat.id, ctx.from.id, ctx);
     let tipo = ctx.chat.type;

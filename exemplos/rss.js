@@ -28,10 +28,10 @@ async function getrss(channelId, maxResults) {
             }
         });
 
-       // console.log(dados);
+        // console.log(dados);
     } catch (err) {
         console.error(err);
-        var dados = [{status: 0}];
+        var dados = [{ status: 0 }];
     }
 
     return dados;
@@ -61,6 +61,16 @@ async function getVideoData(video) {
 }
 
 // getrss('UC4vOpUUqhQDh7XOoBxtTJOg', 4);
+
+async function getid(){
+    var idvideo = await getVideoData('https://www.youtube.com/watch?v=_zpJMt3QZt0');
+    console.log(idvideo[0].canal)
+}
+
+
+//getid()
+
+
 
 module.exports = {
     getrss,
