@@ -29,22 +29,35 @@ const helpmessage = `
 `;
 
 // scenes para adicionar canais
-const canaladd = new Scenes.WizardScene(
+const adcanal = new Scenes.WizardScene(
     'add-canal',
     ctx => {
-        ctx.reply("Qual o ID do canal?");
+        ctx.reply("Digite a url de algum video do canal desejado");
         ctx.wizard.state.data = {};
         return ctx.wizard.next();
     },
     ctx => {
-        ctx.wizard.state.data.cid = ctx.message.text;
-        addcanal(ctx,ctx.wizard.state.data.cid)
-        return ctx.scene.leave()
+        rss.getVideoData(ctx.message.text)
+            .then((data) => {
+                if (data[0].status == 1) {
+                    addcanal(ctx, data[0].canal);
+                } else {
+                    ctx.reply("Erro ao recuperar o id do canal");
+                    ctx.reply("Tente novamente");
+                    return ctx.scene.leave()
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                ctx.reply("Erro ao recuperar o id do canal");
+                ctx.reply("Tente novamente");
+                return ctx.scene.leave()
+            })
+            return ctx.scene.leave()
     }
 );
 
-const st = new Scenes.Stage([canaladd]);
-
+const st = new Scenes.Stage([adcanal]);
 bot.use(session());
 bot.use(st.middleware());
 
@@ -60,7 +73,7 @@ bot.action('delete', (ctx) => {
     ctx.reply("Em construção ");
 })
 
-bot.action('addcategoria', (ctx) => {
+bot.action('api', (ctx) => {
     ctx.reply("Em construção ");
 })
 
@@ -90,6 +103,8 @@ bot.command('chatid', (ctx) => {
 
 // comando start, envia uma mensagem em privado
 async function start(ctx) {
+    console.log(ctx);
+
     const adm = await isAdmin(ctx.chat.id, ctx.from.id, ctx);
     let tipo = ctx.chat.type;
 
@@ -102,7 +117,7 @@ async function start(ctx) {
         const imgPath = './assets/img/001.jpg';
         const menu = {
             inline_keyboard: [
-                [{ text: "Adicionar categoria", callback_data: 'addcategoria' },
+                [{ text: "Configurar API", callback_data: 'api' },
                 { text: "Adicionar Canais", callback_data: 'addcanal' }
                 ],
                 [{ text: "Excluir Canais", callback_data: 'delete' }]
