@@ -68,5 +68,4 @@ async function addcanal(ctx, pid) {
     }
 }
 
-
 bot.launch();

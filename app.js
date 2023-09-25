@@ -53,7 +53,7 @@ const adcanal = new Scenes.WizardScene(
                 ctx.reply("Tente novamente");
                 return ctx.scene.leave()
             })
-            return ctx.scene.leave()
+        return ctx.scene.leave()
     }
 );
 
@@ -66,10 +66,12 @@ bot.command('start', (ctx) => {
 })
 
 bot.action('addcanal', (ctx) => {
+    // validar adm
     ctx.scene.enter('add-canal');
 })
 
 bot.action('delete', (ctx) => {
+    // validar adm
     ctx.reply("Em construção ");
 })
 
@@ -93,7 +95,8 @@ bot.command('find', (ctx) => {
 })
 
 bot.command('addcanal', ctx => {
-    ctx.scene.enter('add-canal');
+    validaaddcanal(ctx)
+    //ctx.scene.enter('add-canal');
 });
 
 bot.command('chatid', (ctx) => {
@@ -101,14 +104,13 @@ bot.command('chatid', (ctx) => {
     console.log(ctx.message.from.id);
 });
 
+
 // comando start, envia uma mensagem em privado
 async function start(ctx) {
-    console.log(ctx);
-
-    const adm = await isAdmin(ctx.chat.id, ctx.from.id, ctx);
     let tipo = ctx.chat.type;
+    let continua = await validaadm(ctx);
 
-    if ((tipo == 'private') || (tipo == 'group' && adm == 'S')) {
+    if (continua == 'S') {
 
         const banner = "Bem - vindo! ";
         const padding = ''.repeat(Math.floor((process.stdout.columns - banner.length) / 2));
@@ -137,7 +139,16 @@ async function start(ctx) {
     return true;
 };
 
-async function addcanal(ctx,pid) {
+async function validaaddcanal(ctx, pid) {
+    const continua = await validaadm(ctx);
+    if (continua == 'S'){
+        ctx.scene.enter('add-canal');
+    }else {
+        bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
+    }
+};
+
+async function addcanal(ctx, pid) {
     var data = await rss.getrss(pid, 1);
     var status = data[0].status;
 
@@ -159,6 +170,7 @@ async function addcanal(ctx,pid) {
     }
 }
 
+//verifica status do usuario
 async function isAdmin(idOfChat, IdOfUser, ctx) {
     const member = await ctx.telegram.getChatMember(idOfChat, IdOfUser)
     var admin;
@@ -172,6 +184,25 @@ async function isAdmin(idOfChat, IdOfUser, ctx) {
     return admin;
 }
 
+// para grupos, valida se o usuario tem permissão para usar o comando
+async function validaadm(ctx) {
+    const adm = await isAdmin(ctx.chat.id, ctx.from.id, ctx);
+    let tipo = ctx.chat.type;
+
+    console.log(adm);
+    console.log(tipo);
+    console.log(ctx);
+
+    if ((tipo == 'private') || ((tipo == 'group' || tipo == 'supergroup') && adm == 'S')) {
+        var continua = 'S';
+    } else {
+        var continua = 'N';
+    }
+
+    return continua;
+}
+
+// lista os canais cadastrados
 async function lista(idchat) {
     console.log(idchat)
     var dados = await canais.listchatall(idchat);
