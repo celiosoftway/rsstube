@@ -4,6 +4,7 @@ const rss = require('./rss.js');
 const users = require('./db/user');
 const canais = require('./db/canais');
 const videos = require('./db/videos');
+const api = require('./db/api');
 
 const CRAWLER_INTERVAL = 50000;
 require("dotenv").config();
@@ -57,7 +58,30 @@ const adcanal = new Scenes.WizardScene(
     }
 );
 
-const st = new Scenes.Stage([adcanal]);
+const addapi = new Scenes.WizardScene(
+    'add-api',
+    ctx => {
+        ctx.reply("Digite o TOKEN da API do Youtube");
+        ctx.wizard.state.data = {};
+        return ctx.wizard.next();
+    },
+    ctx => {
+        api.insereApi(ctx.chat.id, ctx.message.text)
+            .then((data) => {
+                ctx.reply("TOKEN cadastrado");
+                return ctx.scene.leave()
+            })
+            .catch((error) => {
+                console.log(error)
+                ctx.reply("Erro ao cadastrar o token");
+                ctx.reply("Tente novamente");
+                return ctx.scene.leave()
+            })
+        return ctx.scene.leave()
+    }
+);
+
+const st = new Scenes.Stage([adcanal, addapi]);
 bot.use(session());
 bot.use(st.middleware());
 
@@ -77,6 +101,8 @@ bot.action('delete', (ctx) => {
 
 bot.action('api', (ctx) => {
     ctx.reply("Em construção ");
+    // validar adm
+    ctx.scene.enter('add-api');
 })
 
 bot.help((ctx) => {
@@ -139,11 +165,22 @@ async function start(ctx) {
     return true;
 };
 
+async function defineapi(chatid) {
+    var tokenapi = await api.listaChatApi(chatid);
+
+    if (tokenapi == null) {
+        console.log('Sem chave de api definida')
+    } else {
+        console.log(tokenapi)
+    }
+    return tokenapi;
+}
+
 async function validaaddcanal(ctx, pid) {
     const continua = await validaadm(ctx);
-    if (continua == 'S'){
+    if (continua == 'S') {
         ctx.scene.enter('add-canal');
-    }else {
+    } else {
         bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
     }
 };
