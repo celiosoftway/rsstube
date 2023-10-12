@@ -272,8 +272,13 @@ async function lista(idchat) {
 }
 
 async function listafind(idchat) {
-    var dados = await canais.listall(idchat);
 
+    if (idchat == 0 ){
+        var dados = await canais.listall(idchat);
+    } else {
+        var dados = await canais.listchatall(idchat);
+    }
+    
     var canal = dados.map(function (item) {
         return {
             status: 1,
@@ -326,7 +331,8 @@ async function find(idchat) {
     }
 }
 
-
-// setInterval(async () => {   }, CRAWLER_INTERVAL)
+setInterval(async () => { 
+    find(0);
+  }, CRAWLER_INTERVAL)
 
 bot.launch();

@@ -46,7 +46,8 @@ async function listall(c) {
 };
 
 async function listchatall(idchat) {
-  console.log(idchat);
+  //console.log(idchat);
+  
   try {
     var canal = await Canais.findAll({
       where: { chatid: idchat },
