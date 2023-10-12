@@ -41,10 +41,7 @@ Esse projeto é uma aplicação para criar um Bot para Telegram
 ```
 ## Como cadastrar canais
 ```
-  No momento essa é uma tarefa manual
-  1 - Acesse um video do canaal desejado
-  2 - Exiba o codigo fonte da página ( Ctrl + U no Mozila) ou adicione no inicio da url  EX view-source:https://www.youtube.com/watch?v=
-  3 - Pesquise por channelId, e copie o condeudo. Exemplo
-    "channelId":"UC06jukdbEi7_2h79Ohvs0Rw"
-  o id do canal é : UC06jukdbEi7_2h79Ohvs0Rw
+  1 - Acesse um video do canal desejado
+  2 - Copie a URL do video
+  3 - Cole a URL do video no resposta do BOT. 
 ```

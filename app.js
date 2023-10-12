@@ -6,7 +6,12 @@ const canais = require('./db/canais');
 const videos = require('./db/videos');
 const api = require('./db/api');
 
-const CRAWLER_INTERVAL = 50000;
+const CRAWLER_INTERVAL = 21600000;
+// 1 segundo = 1000
+// 1 minuto = 60000
+// 1 Horas = 3600000 
+// 6 horas 21600000
+
 require("dotenv").config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
