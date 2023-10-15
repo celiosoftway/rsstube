@@ -1,16 +1,21 @@
 const { Telegraf, Scenes, session } = require('telegraf');
 
 const rss = require('./rss.js');
+
+// BD com sequelize trabalhando com 3 arquivos por tabela ( EX TCANAIS, BDCANAIS, CANAIS)
+// Arquivo para DDL
+// Arquivo para conexão
+// Arquivo para DML
 const users = require('./db/user');
 const canais = require('./db/canais');
 const videos = require('./db/videos');
 const api = require('./db/api');
 
-const CRAWLER_INTERVAL = 21600000;
 // 1 segundo = 1000
 // 1 minuto = 60000
 // 1 Horas = 3600000 
 // 6 horas 21600000
+const CRAWLER_INTERVAL = 21600000;
 
 require("dotenv").config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -34,6 +39,7 @@ const helpmessage = `
 `;
 
 // scenes para adicionar canais
+// scenes é uma instancia dentro da sessão do usuario, para interagir o capturar dados digitados
 const adcanal = new Scenes.WizardScene(
     'add-canal',
     ctx => {
