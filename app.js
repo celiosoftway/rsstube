@@ -13,7 +13,6 @@ const CRAWLER_INTERVAL = 21600000;
 // 6 horas 21600000
 
 require("dotenv").config();
-
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 // exibe o atalho dos comandos no Telegran
@@ -43,6 +42,8 @@ const adcanal = new Scenes.WizardScene(
         return ctx.wizard.next();
     },
     ctx => {
+        // uso o ID do video e executo a API para retornar os dados do video 
+        // dos dados do video uso o channelId para cadastrar o canal
         rss.getVideoData(ctx.message.text)
             .then((data) => {
                 if (data[0].status == 1) {
@@ -62,6 +63,10 @@ const adcanal = new Scenes.WizardScene(
         return ctx.scene.leave()
     }
 );
+
+// Atualmente esta sendo usado a API cadastrada no arquivo .env
+// posteriormente todas as chamadas da API serão feitas com o TOKEN cadastrado de cada usuario
+// Isso é necessario pq existe um limite diario de utilização.
 
 const addapi = new Scenes.WizardScene(
     'add-api',
@@ -86,10 +91,12 @@ const addapi = new Scenes.WizardScene(
     }
 );
 
+// instruções necessarias para utilizar scenes
 const st = new Scenes.Stage([adcanal, addapi]);
 bot.use(session());
 bot.use(st.middleware());
 
+// abaixo os comandos slash e as actions dos botões
 bot.command('start', (ctx) => {
     start(ctx);
 })
@@ -170,6 +177,8 @@ async function start(ctx) {
     return true;
 };
 
+// Função para verificar se existe TOKEN  cadastrado para o chat
+// posteriormente deve ser validado se o TOKEN é valido, fazendo uma requisição com o TOKEN
 async function defineapi(chatid) {
     var tokenapi = await api.listaChatApi(chatid);
 
@@ -181,6 +190,7 @@ async function defineapi(chatid) {
     return tokenapi;
 }
 
+// Validação utilizada para Grupos, para que o comando só possa ser usado por Adms.
 async function validaaddcanal(ctx, pid) {
     const continua = await validaadm(ctx);
     if (continua == 'S') {
@@ -190,6 +200,7 @@ async function validaaddcanal(ctx, pid) {
     }
 };
 
+// função para adicionar umm canal no BD
 async function addcanal(ctx, pid) {
     var data = await rss.getrss(pid, 1);
     var status = data[0].status;
@@ -271,33 +282,8 @@ async function lista(idchat) {
     return canal;
 }
 
-async function listafind(idchat) {
-
-    if (idchat == 0 ){
-        var dados = await canais.listall(idchat);
-    } else {
-        var dados = await canais.listchatall(idchat);
-    }
-    
-    var canal = dados.map(function (item) {
-        return {
-            status: 1,
-            id: item.id,
-            nome: item.nome,
-            cid: item.cid,
-            chatid: item.chatid
-        }
-    });
-
-    var lista = '';
-    for (i = 0; i < canal.length; i++) {
-        lista = `${lista}ID: ${canal[i].id} Nome: ${canal[i].nome} \n`;
-    }
-
-    console.log(lista)
-
-    return canal;
-}
+// Função para buscar por novos videios para alimentar o feed
+// o ID é utilizado nos comandos para busca manual, e executa a busca para o chat especifico
 
 async function find(idchat) {
     var msg = '';
@@ -331,6 +317,37 @@ async function find(idchat) {
     }
 }
 
+//
+async function listafind(idchat) {
+
+    if (idchat == 0 ){
+        var dados = await canais.listall(idchat);
+    } else {
+        var dados = await canais.listchatall(idchat);
+    }
+    
+    var canal = dados.map(function (item) {
+        return {
+            status: 1,
+            id: item.id,
+            nome: item.nome,
+            cid: item.cid,
+            chatid: item.chatid
+        }
+    });
+
+    var lista = '';
+    for (i = 0; i < canal.length; i++) {
+        lista = `${lista}ID: ${canal[i].id} Nome: ${canal[i].nome} \n`;
+    }
+
+    console.log(lista)
+
+    return canal;
+}
+
+
+// função para executar a busca por novos videios no tempo configurado
 setInterval(async () => { 
     find(0);
   }, CRAWLER_INTERVAL)

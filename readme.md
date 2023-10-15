@@ -9,11 +9,15 @@ Dentro do diretório principal, você pode executar:
 Instala todas as dependências do projeto dentro da pasta "node_modules"
 
 
-### `Criar um aquivo .env para as variáveis de ambiente`
+### `Criar um aquivo .env para as variáveis`
 
 ```
 APIKEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxx.xxxxxxxxxxxxxxxx
 BOT_TOKEN=xxxxxxxxxxxxxxxxxxxxx
+
+Para o BD esta sendo utilizado Sequelize, neste bot estou usando MYSQL e deixei exemplos com SQLite
+HOST = host do banco de dados, no caso de usar banco MYSQL
+BDSENHA = senha do banco de dados
 ```
 ```
 APIKEY é a sua chave de API do Google. 
@@ -22,6 +26,8 @@ Dentro do Cloud, crie um novo projeto
 Em API e Serviços, crie uma nova API
 Ative a API no botão API e serviços ( na pesquisa escolha Youtube Data API V3)
 Ative o serviço, em seguida em credenciais gere um novo token.
+
+OBS: Pensando em um versão distribuida, sera implementado o cadastro da API e cada usuario usara sua propria chave
 
 BOT_TOKEN é o token do bot no Telegram.
 Dentro do app do Telegram inicie uma conversa com o bot BotFather
