@@ -1,3 +1,6 @@
+// função para criar um link de convite de uso unico para um grupo
+// pode ser utilizado para automação de grupos privados pagos
+
 const { Telegraf, Scenes, session } = require('telegraf');
 require("dotenv").config();
 const bot = new Telegraf(process.env.BOT_TOKEN_TEST);

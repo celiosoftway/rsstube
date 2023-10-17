@@ -1,3 +1,6 @@
+// scenes é uma forma de interagir com o usuario
+// é utilizado sessão
+
 const { Telegraf, Scenes, session } = require('telegraf');
 require("dotenv").config();
 const rss = require('./rss.js');

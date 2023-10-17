@@ -1,11 +1,8 @@
 const { Telegraf, Scenes, session } = require('telegraf');
-
 const rss = require('./rss.js');
 
-// BD com sequelize trabalhando com 3 arquivos por tabela ( EX TCANAIS, BDCANAIS, CANAIS)
-// Arquivo para DDL
-// Arquivo para conexão
-// Arquivo para DML
+// BD com sequelize trabalhando com 3 arquivos por tabela ( EX TCANAIS, DCANAIS, CANAIS)
+// Arquivo para DDL, Arquivo para conexão, Arquivo para DML
 const users = require('./db/user');
 const canais = require('./db/canais');
 const videos = require('./db/videos');
@@ -15,7 +12,7 @@ const api = require('./db/api');
 // 1 minuto = 60000
 // 1 Horas = 3600000 
 // 6 horas 21600000
-const CRAWLER_INTERVAL = 21600000;
+const CRAWLER_INTERVAL = 10800000;
 
 require("dotenv").config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -43,7 +40,7 @@ const helpmessage = `
 const adcanal = new Scenes.WizardScene(
     'add-canal',
     ctx => {
-        ctx.reply("Digite a url de algum video do canal desejado");
+        ctx.reply("Digite a url de algum video do canal desejado\nCopie a URL da barra do navegador, não use a URL gerada na opção de compartilhar");
         ctx.wizard.state.data = {};
         return ctx.wizard.next();
     },
@@ -103,39 +100,21 @@ bot.use(session());
 bot.use(st.middleware());
 
 // abaixo os comandos slash e as actions dos botões
+
+// comando que inicia a conversa com o bot
 bot.command('start', (ctx) => {
     start(ctx);
 })
 
-bot.action('addcanal', (ctx) => {
-    // validar adm
-    ctx.scene.enter('add-canal');
-})
-
-bot.action('delete', (ctx) => {
-    // validar adm
-    ctx.reply("Em construção ");
-})
-
-bot.action('api', (ctx) => {
-    ctx.reply("Em construção ");
-    // validar adm
-    ctx.scene.enter('add-api');
-})
-
+// exibe as opções de comandos do bot
 bot.help((ctx) => {
     ctx.reply(helpmessage);
 })
 
-bot.command('lista', (ctx) => {
-    var idchat = ctx.chat.id;
-    console.log(`/lista ${idchat}`)
-    lista(idchat);
-})
-
-bot.command('find', (ctx) => {
-    var idchat = ctx.chat.id;
-    find(idchat);
+// comando e action para adicionar um canal para o feed
+bot.action('addcanal', (ctx) => {
+    // validar adm
+    ctx.scene.enter('add-canal');
 })
 
 bot.command('addcanal', ctx => {
@@ -143,13 +122,41 @@ bot.command('addcanal', ctx => {
     //ctx.scene.enter('add-canal');
 });
 
+
+//comando para deletar um canal do feed
+bot.action('delete', (ctx) => {
+    // validar adm
+    ctx.reply("Em construção ");
+})
+
+// action para cadastrar API
+bot.action('api', (ctx) => {
+    ctx.reply("Em construção ");
+    // validar adm
+    ctx.scene.enter('add-api');
+})
+
+//comando para listar os canais cadastrados no feed
+bot.command('lista', (ctx) => {
+    var idchat = ctx.chat.id;
+    console.log(`/lista ${idchat}`)
+    lista(idchat);
+})
+
+// executa uma busca manual por videios
+bot.command('find', (ctx) => {
+    var idchat = ctx.chat.id;
+    find(idchat);
+})
+
+// exibe o ID do chat
 bot.command('chatid', (ctx) => {
     bot.telegram.sendMessage(ctx.chat.id, `O ID deste chat é: ${ctx.chat.id}`);
     console.log(ctx.message.from.id);
 });
 
 
-// comando start, envia uma mensagem em privado
+// function start, envia uma mensagem em privado
 async function start(ctx) {
     let tipo = ctx.chat.type;
     let continua = await validaadm(ctx);
@@ -206,7 +213,7 @@ async function validaaddcanal(ctx, pid) {
     }
 };
 
-// função para adicionar umm canal no BD
+// função para adicionar umm canal no feed
 async function addcanal(ctx, pid) {
     var data = await rss.getrss(pid, 1);
     var status = data[0].status;

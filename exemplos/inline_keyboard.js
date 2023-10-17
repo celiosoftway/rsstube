@@ -1,3 +1,5 @@
+// exemplos de botoes inline
+
 const { Telegraf, Scenes, session } = require('telegraf');
 require("dotenv").config();
 const bot = new Telegraf(process.env.BOT_TOKEN_TEST);

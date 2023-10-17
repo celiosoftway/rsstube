@@ -1,3 +1,6 @@
+// função para mandar mensagem no chat quando um novo menbro entrar no grupo
+// a função é executada ao disparar o evento new_chat_members
+
 const { Telegraf, Scenes, session } = require('telegraf');
 require("dotenv").config();
 const bot = new Telegraf(process.env.BOT_TOKEN_TEST);
