@@ -304,29 +304,32 @@ async function find(idchat) {
 
     for (i = 0; i < canais.length; i++) {
         var verifica = await rss.getrss(canais[i].cid, 1);
-        console.log(verifica);
-        console.log(verifica[0].canal);
 
-        var cnome = canais[i].nome;
-        var idvideo = verifica[0].idvideo;
-        var urlvideo = verifica[0].urlvideo;
-        var idcanal = canais[i].id;
-        var codcanal = verifica[0].canalid;
-        var dtvideo = verifica[0].dtvideo;
-        var idchat = canais[i].chatid;
-        var chave = `${idchat}${idcanal}${idvideo}`;
-
-        console.log(idvideo + ' - ' + urlvideo + ' - ' + idcanal + ' - ' + codcanal + ' - ' + dtvideo + ' - ' + idchat + ' - ' + chave);
-
-        var inserir = await videos.listavideo(codcanal, idvideo);
-
-        console.log(`inserir = ${inserir}`)
-
-        if (inserir == 0) {
-            videos.inserevideo(idvideo, urlvideo, idcanal, codcanal, dtvideo, idchat, chave)
-            msg = `Video novo no canal ${cnome}!! Veja o video: \n \n` + urlvideo
-            bot.telegram.sendMessage(idchat, msg);
-        }
+        if  (verifica[0].status == 1) {
+            console.log(verifica);
+            console.log(verifica[0].canal);
+    
+            var cnome = canais[i].nome;
+            var idvideo = verifica[0].idvideo;
+            var urlvideo = verifica[0].urlvideo;
+            var idcanal = canais[i].id;
+            var codcanal = verifica[0].canalid;
+            var dtvideo = verifica[0].dtvideo;
+            var idchat = canais[i].chatid;
+            var chave = `${idchat}${idcanal}${idvideo}`;
+    
+            console.log(idvideo + ' - ' + urlvideo + ' - ' + idcanal + ' - ' + codcanal + ' - ' + dtvideo + ' - ' + idchat + ' - ' + chave);
+    
+            var inserir = await videos.listavideo(codcanal, idvideo);
+    
+            console.log(`inserir = ${inserir}`)
+    
+            if (inserir == 0) {
+                videos.inserevideo(idvideo, urlvideo, idcanal, codcanal, dtvideo, idchat, chave)
+                msg = `Video novo no canal ${cnome}!! Veja o video: \n \n` + urlvideo
+                bot.telegram.sendMessage(idchat, msg);
+            }
+        } 
     }
 }
 
