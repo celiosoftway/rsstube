@@ -60,7 +60,7 @@ async function getVideoData(video) {
     return dados;
 }
 
- getrss('UC4vOpUUqhQDh7XOoBxtTJOg', 4);
+ //getrss('UC4vOpUUqhQDh7XOoBxtTJOg', 4);
 
 module.exports = {
     getrss,

@@ -133,7 +133,7 @@ bot.action('delete', (ctx) => {
 bot.action('api', (ctx) => {
     ctx.reply("Em construção ");
     // validar adm
-    ctx.scene.enter('add-api');
+   // ctx.scene.enter('add-api');
 })
 
 //comando para listar os canais cadastrados no feed
