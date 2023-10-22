@@ -94,8 +94,25 @@ const addapi = new Scenes.WizardScene(
     }
 );
 
+// scene para deletar um canal
+const deletacanal = new Scenes.WizardScene(
+    'dell-canal',
+    ctx => {
+        ctx.reply("Digite o ID do canal desejado");
+        lista(ctx.chat.id)
+        ctx.wizard.state.id = {};
+        return ctx.wizard.next();
+    },
+    ctx => {
+         ctx.wizard.state.id = ctx.message.text
+         ctx.reply(`Deseja deletar o canal de ID ${ctx.wizard.state.id }`);
+        
+        return ctx.scene.leave()
+    }
+);
+
 // instruções necessarias para utilizar scenes
-const st = new Scenes.Stage([adcanal, addapi]);
+const st = new Scenes.Stage([adcanal, addapi, deletacanal]);
 bot.use(session());
 bot.use(st.middleware());
 
