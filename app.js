@@ -104,9 +104,9 @@ const deletacanal = new Scenes.WizardScene(
         return ctx.wizard.next();
     },
     ctx => {
-         ctx.wizard.state.id = ctx.message.text
-         ctx.reply(`Deseja deletar o canal de ID ${ctx.wizard.state.id }`);
-        
+        ctx.wizard.state.id = ctx.message.text
+        ctx.reply(`Deseja deletar o canal de ID ${ctx.wizard.state.id}`);
+
         return ctx.scene.leave()
     }
 );
@@ -150,7 +150,7 @@ bot.action('delete', (ctx) => {
 bot.action('api', (ctx) => {
     ctx.reply("Em construção ");
     // validar adm
-   // ctx.scene.enter('add-api');
+    // ctx.scene.enter('add-api');
 })
 
 //comando para listar os canais cadastrados no feed
@@ -314,7 +314,6 @@ async function lista(idchat) {
 
 // Função para buscar por novos videios para alimentar o feed
 // o ID é utilizado nos comandos para busca manual, e executa a busca para o chat especifico
-
 async function find(idchat) {
     var msg = '';
     var canais = await listafind(idchat);
@@ -322,10 +321,10 @@ async function find(idchat) {
     for (i = 0; i < canais.length; i++) {
         var verifica = await rss.getrss(canais[i].cid, 1);
 
-        if  (verifica[0].status == 1) {
+        if (verifica[0].status == 1) {
             console.log(verifica);
             console.log(verifica[0].canal);
-    
+
             var cnome = canais[i].nome;
             var idvideo = verifica[0].idvideo;
             var urlvideo = verifica[0].urlvideo;
@@ -334,31 +333,31 @@ async function find(idchat) {
             var dtvideo = verifica[0].dtvideo;
             var idchat = canais[i].chatid;
             var chave = `${idchat}${idcanal}${idvideo}`;
-    
+
             console.log(idvideo + ' - ' + urlvideo + ' - ' + idcanal + ' - ' + codcanal + ' - ' + dtvideo + ' - ' + idchat + ' - ' + chave);
-    
+
             var inserir = await videos.listavideo(codcanal, idvideo);
-    
+
             console.log(`inserir = ${inserir}`)
-    
+
             if (inserir == 0) {
                 videos.inserevideo(idvideo, urlvideo, idcanal, codcanal, dtvideo, idchat, chave)
                 msg = `Video novo no canal ${cnome}!! Veja o video: \n \n` + urlvideo
                 bot.telegram.sendMessage(idchat, msg);
             }
-        } 
+        }
     }
 }
 
 //
 async function listafind(idchat) {
 
-    if (idchat == 0 ){
+    if (idchat == 0) {
         var dados = await canais.listall(idchat);
     } else {
         var dados = await canais.listchatall(idchat);
     }
-    
+
     var canal = dados.map(function (item) {
         return {
             status: 1,
@@ -379,10 +378,24 @@ async function listafind(idchat) {
     return canal;
 }
 
-
 // função para executar a busca por novos videios no tempo configurado
-setInterval(async () => { 
+setInterval(async () => {
     find(0);
-  }, CRAWLER_INTERVAL)
+}, CRAWLER_INTERVAL)
 
+//catch error
+bot.catch((err) => {
+    const ctx = err.ctx;
+    console.error(`Error while handling update ${ctx.update.update_id}:`);
+    const e = err.error;
+    if (e instanceof GrammyError) {
+        console.error("Error in request:", e.description);
+    } else if (e instanceof HttpError) {
+        console.error("Could not contact Telegram:", e);
+    } else {
+        console.error("Unknown error:", e);
+    }
+});
+
+//inicia o bot
 bot.launch();
