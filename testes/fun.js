@@ -1,4 +1,5 @@
 const rss = require('./rss.js');
+const app = require('./app.js');
 const canais = require('../db/canais');
 
 async function addcanal(ctx, pid) {
@@ -23,6 +24,13 @@ async function addcanal(ctx, pid) {
     }
 }
 
+async function msg(ctx) {
+    var idchat = ctx.chat.id;
+    ctx.reply(`Ola, bot iniciado para o chat ${idchat}`)
+    app.send(idchat, "Teste de mensagem");
+}
+
 module.exports = {
-    addcanal
+    addcanal,
+    msg
 }

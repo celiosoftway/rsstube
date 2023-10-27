@@ -24,6 +24,7 @@ bot.telegram.setMyCommands([
     { command: 'addcanal', description: 'Adicina um novo canal' },
     { command: 'lista', description: 'lista os canais cadastrados' },
     { command: 'find', description: 'Busca por videos novos manualmente' },
+    { command: 'delete', description: 'Deletar um canal' },
 ]);
 
 //constante para os comandos do help
@@ -33,10 +34,11 @@ const helpmessage = `
   /addcanal - Adicina um novo canal
   /lista - lista os canais cadastrados
   /find - Busca por videos novos manualmente
+  /delete - Deletar um canal
 `;
 
 // scenes para adicionar canais
-// scenes é uma instancia dentro da sessão do usuario, para interagir o capturar dados digitados
+// scenes é uma instancia dentro da sessão do usuario, para interagir e capturar dados digitados
 const adcanal = new Scenes.WizardScene(
     'add-canal',
     ctx => {
@@ -105,7 +107,18 @@ const deletacanal = new Scenes.WizardScene(
     },
     ctx => {
         ctx.wizard.state.id = ctx.message.text
-        ctx.reply(`Deseja deletar o canal de ID ${ctx.wizard.state.id}`);
+        ctx.reply(`Deseja deletar o canal de ID ${ctx.wizard.state.id} (S, N)`);
+
+        return ctx.wizard.next();
+    },
+    ctx => {
+        if ((ctx.message.text == 'S') || (ctx.message.text == 's')) {
+            ctx.reply("Deletar canal");
+        } else if ((ctx.message.text == 'N') || (ctx.message.text == 'n')) {
+            ctx.reply("Tudo certo, o canal não sera deletado");
+        } else {
+            ctx.reply("Não entendi sua resposta");
+        }
 
         return ctx.scene.leave()
     }
@@ -130,13 +143,11 @@ bot.help((ctx) => {
 
 // comando e action para adicionar um canal para o feed
 bot.action('addcanal', (ctx) => {
-    // validar adm
-    ctx.scene.enter('add-canal');
+    validaaddcanal(ctx);
 })
 
 bot.command('addcanal', ctx => {
-    validaaddcanal(ctx)
-    //ctx.scene.enter('add-canal');
+    validaaddcanal(ctx);
 });
 
 
@@ -156,11 +167,10 @@ bot.action('api', (ctx) => {
 //comando para listar os canais cadastrados no feed
 bot.command('lista', (ctx) => {
     var idchat = ctx.chat.id;
-    console.log(`/lista ${idchat}`)
     lista(idchat);
 })
 
-// executa uma busca manual por videios
+// executa uma busca manual por videos
 bot.command('find', (ctx) => {
     var idchat = ctx.chat.id;
     find(idchat);
@@ -171,7 +181,6 @@ bot.command('chatid', (ctx) => {
     bot.telegram.sendMessage(ctx.chat.id, `O ID deste chat é: ${ctx.chat.id}`);
     console.log(ctx.message.from.id);
 });
-
 
 // function start, envia uma mensagem em privado
 async function start(ctx) {
@@ -272,10 +281,6 @@ async function validaadm(ctx) {
     const adm = await isAdmin(ctx.chat.id, ctx.from.id, ctx);
     let tipo = ctx.chat.type;
 
-    console.log(adm);
-    console.log(tipo);
-    console.log(ctx);
-
     if ((tipo == 'private') || ((tipo == 'group' || tipo == 'supergroup') && adm == 'S')) {
         var continua = 'S';
     } else {
@@ -285,7 +290,7 @@ async function validaadm(ctx) {
     return continua;
 }
 
-// lista os canais cadastrados
+// lista os canais cadastrados do chat
 async function lista(idchat) {
     console.log(idchat)
     var dados = await canais.listchatall(idchat);
@@ -312,7 +317,7 @@ async function lista(idchat) {
     return canal;
 }
 
-// Função para buscar por novos videios para alimentar o feed
+// Função para buscar por novos vídeos para alimentar o feed
 // o ID é utilizado nos comandos para busca manual, e executa a busca para o chat especifico
 async function find(idchat) {
     var msg = '';
@@ -349,9 +354,10 @@ async function find(idchat) {
     }
 }
 
-//
+// lista os canais cadastrados.
+// idchat = 0 é a chamada automatica lista os canais de todos os chats
+// idchat <> 0 é a chamada realizada manualmente para atualizar o feed, lista chat específico
 async function listafind(idchat) {
-
     if (idchat == 0) {
         var dados = await canais.listall(idchat);
     } else {
@@ -378,7 +384,7 @@ async function listafind(idchat) {
     return canal;
 }
 
-// função para executar a busca por novos videios no tempo configurado
+// função para executar a busca por novos vídeos no tempo configurado
 setInterval(async () => {
     find(0);
 }, CRAWLER_INTERVAL)
