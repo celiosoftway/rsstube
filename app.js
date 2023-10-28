@@ -1,4 +1,10 @@
+//Scenes      : adcanal, addapi, deletacanal
+//Bot commnad : start, help, addcanal, delete, api, lista, find, chatid
+//function    : start, defineapi, validaaddcanal, addcanal, isAdmin, validaadm, lista, find, listafind
+
 const { Telegraf, Scenes, session } = require('telegraf');
+
+// rss.js contem as function para interagir com a API do Youtube
 const rss = require('./rss.js');
 
 // BD com sequelize trabalhando com 3 arquivos por tabela ( EX TCANAIS, DCANAIS, CANAIS)
@@ -8,16 +14,14 @@ const canais = require('./db/canais');
 const videos = require('./db/videos');
 const api = require('./db/api');
 
-// 1 segundo = 1000
-// 1 minuto = 60000
-// 1 Horas = 3600000 
-// 6 horas 21600000
-const CRAWLER_INTERVAL = 10800000;
+// por enquanto esta intervalo fixo, posteriormente criar configuração por usuário
+// 1 segundo = 1000 1 minuto = 60000 1 Horas = 3600000  6 horas 21600000
+const CRAWLER_INTERVAL = 10800000;  // 3 horas
 
 require("dotenv").config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// exibe o atalho dos comandos no Telegran
+// cria um menu com os comandos no chat do telegran
 bot.telegram.setMyCommands([
     { command: 'start', description: 'inicia conversa com o bot' },
     { command: 'help', description: 'Exibe uma lista de comandos' },
@@ -27,7 +31,7 @@ bot.telegram.setMyCommands([
     { command: 'delete', description: 'Deletar um canal' },
 ]);
 
-//constante para os comandos do help
+//constante para o comando do help com a lista de comandos slash
 const helpmessage = `
   Comandos do bot:
   /start - inicia a conversa com o bot
@@ -71,7 +75,7 @@ const adcanal = new Scenes.WizardScene(
 
 // Atualmente esta sendo usado a API cadastrada no arquivo .env
 // posteriormente todas as chamadas da API serão feitas com o TOKEN cadastrado de cada usuario
-// Isso é necessario pq existe um limite diario de utilização.
+// Isso é necessario pq existe um limite diario de utilização da API.
 
 const addapi = new Scenes.WizardScene(
     'add-api',
@@ -125,12 +129,12 @@ const deletacanal = new Scenes.WizardScene(
 );
 
 // instruções necessarias para utilizar scenes
+// crio um stage com as scenes e uso em um middleware
 const st = new Scenes.Stage([adcanal, addapi, deletacanal]);
 bot.use(session());
 bot.use(st.middleware());
 
 // abaixo os comandos slash e as actions dos botões
-
 // comando que inicia a conversa com o bot
 bot.command('start', (ctx) => {
     start(ctx);
@@ -276,7 +280,7 @@ async function isAdmin(idOfChat, IdOfUser, ctx) {
     return admin;
 }
 
-// para grupos, valida se o usuario tem permissão para usar o comando
+// para grupos, valida se o usuario tem permissão para usar o comando (donos e adms)
 async function validaadm(ctx) {
     const adm = await isAdmin(ctx.chat.id, ctx.from.id, ctx);
     let tipo = ctx.chat.type;
