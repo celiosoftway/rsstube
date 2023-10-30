@@ -19,8 +19,8 @@ const api = require('./db/api');
 const CRAWLER_INTERVAL = 10800000;  // 3 horas
 
 require("dotenv").config();
-//const bot = new Telegraf(process.env.BOT_TOKEN);
-const bot = new Telegraf(process.env.BOT_TOKEN_TEST);
+const bot = new Telegraf(process.env.BOT_TOKEN);
+//const bot = new Telegraf(process.env.BOT_TOKEN_TEST);
 
 // cria um menu com os comandos no chat do telegran
 bot.telegram.setMyCommands([
