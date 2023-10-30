@@ -20,6 +20,7 @@ const CRAWLER_INTERVAL = 10800000;  // 3 horas
 
 require("dotenv").config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
+//const bot = new Telegraf(process.env.BOT_TOKEN_TEST);
 
 // cria um menu com os comandos no chat do telegran
 bot.telegram.setMyCommands([
@@ -104,7 +105,7 @@ const addapi = new Scenes.WizardScene(
 const deletacanal = new Scenes.WizardScene(
     'dell-canal',
     ctx => {
-        ctx.reply("Digite o ID do canal desejado");
+        ctx.reply("Digite o ID do canal que deseja deletar");
         lista(ctx.chat.id)
         ctx.wizard.state.id = {};
         return ctx.wizard.next();
@@ -118,6 +119,15 @@ const deletacanal = new Scenes.WizardScene(
     ctx => {
         if ((ctx.message.text == 'S') || (ctx.message.text == 's')) {
             ctx.reply("Deletar canal");
+
+            canais.deleteone(ctx.wizard.state.id, ctx.chat.id)
+                .then((data) => {
+                    ctx.reply(`Canal deletado. Clique em /lista para conferir.`);
+                })
+                .catch((error) => {
+                    ctx.reply("Eyta... Erro ao deletar canal");
+                })
+
         } else if ((ctx.message.text == 'N') || (ctx.message.text == 'n')) {
             ctx.reply("Tudo certo, o canal não sera deletado");
         } else {
@@ -154,11 +164,35 @@ bot.command('addcanal', ctx => {
     validaaddcanal(ctx);
 });
 
-
 //comando para deletar um canal do feed
 bot.action('delete', (ctx) => {
     // validar adm
-    ctx.reply("Em construção ");
+    validaadm(ctx)
+        .then((data) => {
+            if (data == 'S') {
+                ctx.scene.enter('dell-canal');
+            } else {
+                bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
+            }
+        })
+        .catch((error) => {
+            ctx.reply("Erro ao validar permissão");
+        })
+})
+
+bot.command('delete', (ctx) => {
+    // validar adm
+    validaadm(ctx)
+        .then((data) => {
+            if (data == 'S') {
+                ctx.scene.enter('dell-canal');
+            } else {
+                bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
+            }
+        })
+        .catch((error) => {
+            ctx.reply("Erro ao validar permissão");
+        })
 })
 
 // action para cadastrar API

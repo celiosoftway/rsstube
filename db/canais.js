@@ -36,7 +36,7 @@ async function listaOne(cid) {
 
 async function listall(c) {
   try {
-    var canal = await Canais.findAll({ attributes: ['id','nome','cid','chatid'], raw: true});
+    var canal = await Canais.findAll({ attributes: ['id', 'nome', 'cid', 'chatid'], raw: true });
 
   } catch {
     console.log('canal não encontrado');
@@ -47,11 +47,11 @@ async function listall(c) {
 
 async function listchatall(idchat) {
   //console.log(idchat);
-  
+
   try {
     var canal = await Canais.findAll({
       where: { chatid: idchat },
-      attributes: ['id','nome','cid','chatid']
+      attributes: ['id', 'nome', 'cid', 'chatid']
     });
 
   } catch {
@@ -61,14 +61,23 @@ async function listchatall(idchat) {
   return canal;
 };
 
+async function deleteone(id, chat) {
+  console.log(id)
+  console.log(chat)
 
+  try {
+    let result = await Canais.destroy({
+      where: { id: id, chatid: chat }
+    });
+  } catch (e) { console.error(e) }
 
-
+}
 
 module.exports = {
   insereCanal,
   listaOne,
   listall,
-  listchatall
+  listchatall,
+  deleteone
 }
 
