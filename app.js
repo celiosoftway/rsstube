@@ -19,8 +19,8 @@ const api = require('./db/api');
 const CRAWLER_INTERVAL = 10800000;  // 3 horas
 
 require("dotenv").config();
-const bot = new Telegraf(process.env.BOT_TOKEN);
-//const bot = new Telegraf(process.env.BOT_TOKEN_TEST);
+//const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN_TEST);
 
 // cria um menu com os comandos no chat do telegran
 bot.telegram.setMyCommands([
@@ -112,7 +112,20 @@ const deletacanal = new Scenes.WizardScene(
     },
     ctx => {
         ctx.wizard.state.id = ctx.message.text
-        ctx.reply(`Deseja deletar o canal de ID ${ctx.wizard.state.id} (S, N)`);
+
+        canais.listchatone(ctx.chat.id, ctx.wizard.state.id)
+            .then((data) => {
+                if (data.length == 0) {
+                    ctx.reply(`O canal ID ${ctx.wizard.state.id} não pertence a esse chat`);
+                    return ctx.scene.leave();
+                } else {
+                    ctx.reply(`Deseja deletar o canal de ID ${ctx.wizard.state.id} (S, N)`);
+                }
+            })
+            .catch((error) => {
+                ctx.reply("Canal não pertence a este chat");
+                return ctx.scene.leave();
+            })
 
         return ctx.wizard.next();
     },

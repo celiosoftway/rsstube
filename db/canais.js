@@ -61,6 +61,22 @@ async function listchatall(idchat) {
   return canal;
 };
 
+async function listchatone(idchat, idcanal) {
+  //console.log(idchat);
+
+  try {
+    var canal = await Canais.findAll({
+      where: { chatid: idchat, id:idcanal  },
+      attributes: ['id', 'nome', 'cid', 'chatid']
+    });
+
+  } catch {
+    console.log('canal não encontrado');
+  }
+
+  return canal;
+};
+
 async function deleteone(id, chat) {
   console.log(id)
   console.log(chat)
@@ -78,6 +94,7 @@ module.exports = {
   listaOne,
   listall,
   listchatall,
+  listchatone,
   deleteone
 }
 
