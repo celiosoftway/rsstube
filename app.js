@@ -343,28 +343,28 @@ async function validaadm(ctx) {
 
 // lista os canais cadastrados do chat
 async function lista(idchat) {
-    console.log(idchat)
     var dados = await canais.listchatall(idchat);
 
-    console.log(dados)
-
-    var canal = dados.map(function (item) {
-        return {
-            status: 1,
-            id: item.id,
-            nome: item.nome,
-            cid: item.cid,
-            chatid: item.chatid
+    if (dados.length > 0) {
+        var canal = dados.map(function (item) {
+            return {
+                status: 1,
+                id: item.id,
+                nome: item.nome,
+                cid: item.cid,
+                chatid: item.chatid
+            }
+        });
+        var lista = '';
+        for (i = 0; i < canal.length; i++) {
+            lista = `${lista}ID: ${canal[i].id} Nome: ${canal[i].nome} \n`;
         }
-    });
 
-    var lista = '';
-    for (i = 0; i < canal.length; i++) {
-        lista = `${lista}ID: ${canal[i].id} Nome: ${canal[i].nome} \n`;
+        bot.telegram.sendMessage(idchat, lista);
+    }else{
+        bot.telegram.sendMessage(idchat, 'Sem canais para listar');
     }
 
-    console.log(lista)
-    bot.telegram.sendMessage(idchat, lista);
     return canal;
 }
 
