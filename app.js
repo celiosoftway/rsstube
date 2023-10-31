@@ -361,7 +361,7 @@ async function lista(idchat) {
         }
 
         bot.telegram.sendMessage(idchat, lista);
-    }else{
+    } else {
         bot.telegram.sendMessage(idchat, 'Sem canais para listar');
     }
 
