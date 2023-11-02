@@ -1,6 +1,11 @@
 # RssTUBE - Bot para Telegram para receber os videos dos canais favoritos
 
+O Rsstube é um bot para Telegran para cadastrar um feed de canais do Youtube.
+Implementado para ser usado em chat privato e tambem em grupos, oque permite criar grupos de feed separados por tema.
+
 <img src="/assets/img/rsstube.png">
+
+Atualmente o bot utiliza a API do Youtube que tem uma utilização diaria limitada,  mas já estamos trabalhando em api propria que atualiza os dados utilizando web scraping.
 
 ## Como iniciar o projeto
 
