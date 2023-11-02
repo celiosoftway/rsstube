@@ -1,5 +1,7 @@
 # RssTUBE - Bot para Telegram para receber os videos dos canais favoritos
 
+<img src="/assets/img/rsstube.png">
+
 ## Como iniciar o projeto
 
 Dentro do diretório principal, você pode executar:
@@ -12,6 +14,8 @@ Instala todas as dependências do projeto dentro da pasta "node_modules"
 ### `Criar um aquivo .env para as variáveis`
 
 ```
+Veja o arquivo .env_exemplo
+
 APIKEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxx.xxxxxxxxxxxxxxxx
 BOT_TOKEN=xxxxxxxxxxxxxxxxxxxxx
 
@@ -40,14 +44,17 @@ Esse projeto é uma aplicação para criar um Bot para Telegram
 ## Funções do Bot implementadas
 ```
   Comandos do bot:
-  /start - inicia a conversa com o bot
-  /addcanal - Cadastra um canal no banco de dados
-  /lista - lista os canais cadastrados
+  /start - inicia o bot
+  /add - Cadastra um canal do banco de dados
+  /del - Deleta um canal do banco de dados
+  /list - lista os canais cadastrados
   /find - Executa a busca por videos novos manualmente
 ```
 ## Como cadastrar canais
 ```
   1 - Acesse um video do canal desejado
   2 - Copie a URL do video
-  3 - Cole a URL do video no resposta do BOT. 
+       EX: https://www.youtube.com/watch?v=N3q2VfFiU_8
+        A URL deve ter este formato com o final "?v=N3q2VfFiU_8"
+  3 - Use o comando /add e cole a URL do video no resposta do BOT. 
 ```

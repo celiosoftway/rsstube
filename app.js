@@ -25,21 +25,22 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 // cria um menu com os comandos no chat do telegran
 bot.telegram.setMyCommands([
     { command: 'start', description: 'inicia conversa com o bot' },
+    { command: 'add', description: 'Adicina um novo canal' },
+    { command: 'del', description: 'Deletar um canal' },
     { command: 'help', description: 'Exibe uma lista de comandos' },
-    { command: 'addcanal', description: 'Adicina um novo canal' },
-    { command: 'lista', description: 'lista os canais cadastrados' },
+    { command: 'list', description: 'lista os canais cadastrados' },
     { command: 'find', description: 'Busca por videos novos manualmente' },
-    { command: 'delete', description: 'Deletar um canal' },
+
 ]);
 
 //constante para o comando do help com a lista de comandos slash
 const helpmessage = `
   Comandos do bot:
   /start - inicia a conversa com o bot
-  /addcanal - Adicina um novo canal
-  /lista - lista os canais cadastrados
+  /add - Adicina um novo canal
+  /del - Deletar um canal
+  /list - lista os canais cadastrados
   /find - Busca por videos novos manualmente
-  /delete - Deletar um canal
 `;
 
 // scenes para adicionar canais
@@ -169,16 +170,16 @@ bot.help((ctx) => {
 })
 
 // comando e action para adicionar um canal para o feed
-bot.action('addcanal', (ctx) => {
+bot.action('add', (ctx) => {
     validaaddcanal(ctx);
 })
 
-bot.command('addcanal', ctx => {
+bot.command('add', ctx => {
     validaaddcanal(ctx);
 });
 
 //comando para deletar um canal do feed
-bot.action('delete', (ctx) => {
+bot.action('del', (ctx) => {
     // validar adm
     validaadm(ctx)
         .then((data) => {
@@ -193,7 +194,7 @@ bot.action('delete', (ctx) => {
         })
 })
 
-bot.command('delete', (ctx) => {
+bot.command('del', (ctx) => {
     // validar adm
     validaadm(ctx)
         .then((data) => {
@@ -216,7 +217,7 @@ bot.action('api', (ctx) => {
 })
 
 //comando para listar os canais cadastrados no feed
-bot.command('lista', (ctx) => {
+bot.command('list', (ctx) => {
     var idchat = ctx.chat.id;
     lista(idchat);
 })
@@ -248,9 +249,9 @@ async function start(ctx) {
         const menu = {
             inline_keyboard: [
                 [{ text: "Configurar API", callback_data: 'api' },
-                { text: "Adicionar Canais", callback_data: 'addcanal' }
+                { text: "Adicionar Canais", callback_data: 'add' }
                 ],
-                [{ text: "Excluir Canais", callback_data: 'delete' }]
+                [{ text: "Excluir Canais", callback_data: 'del' }]
             ]
         };
         ctx.replyWithPhoto({ source: imgPath }, { caption: centeredbanner + message, reply_markup: menu });

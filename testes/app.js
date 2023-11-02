@@ -11,15 +11,23 @@ bot.command('start', (ctx) => {
     ctx.reply("Ola, bot iniciado")
 })
 
-bot.command('msg', (ctx) => {
-    //var idchat = ctx.chat.id;
-   fun.msg(ctx);
-})
 
-async function sendmessage(id, msg){
+
+async function sendmessage(id, msg) {
     bot.telegram.sendMessage(id, msg);
 }
 
+const web_link = "https://eeveeboony.space/alinks/";
+
+
+bot.command('site', (ctx) => {
+    ctx.reply("Welcome", {
+        reply_markup:
+            { keyboard: [[{ text: "web app", web_app: { url: web_link } }]], },
+    })
+})
+
+    
 //catch error
 bot.catch((err) => {
     const ctx = err.ctx;
