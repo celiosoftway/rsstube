@@ -1,5 +1,5 @@
 //Scenes      : adcanal, addapi, deletacanal
-//Bot commnad : start, help, addcanal, delete, api, lista, find, chatid
+//Bot commnad : start, help, add, del, api, list, find, chatid
 //function    : start, defineapi, validaaddcanal, addcanal, isAdmin, validaadm, lista, find, listafind
 
 const { Telegraf, Scenes, session } = require('telegraf');
