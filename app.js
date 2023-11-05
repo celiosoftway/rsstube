@@ -179,34 +179,24 @@ bot.command('add', ctx => {
 });
 
 //comando para deletar um canal do feed
-bot.action('del', (ctx) => {
-    // validar adm
-    validaadm(ctx)
-        .then((data) => {
-            if (data == 'S') {
-                ctx.scene.enter('dell-canal');
-            } else {
-                bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
-            }
-        })
-        .catch((error) => {
-            ctx.reply("Erro ao validar permissão");
-        })
+bot.action('del', async (ctx) => {
+    let adm = await validaadm(ctx)
+
+    if (adm == 'S') {
+        ctx.scene.enter('dell-canal');
+    } else {
+        bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
+    }
 })
 
-bot.command('del', (ctx) => {
-    // validar adm
-    validaadm(ctx)
-        .then((data) => {
-            if (data == 'S') {
-                ctx.scene.enter('dell-canal');
-            } else {
-                bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
-            }
-        })
-        .catch((error) => {
-            ctx.reply("Erro ao validar permissão");
-        })
+bot.command('del', async (ctx) => {
+    let adm = await validaadm(ctx)
+
+    if (adm == 'S') {
+        ctx.scene.enter('dell-canal');
+    } else {
+        bot.telegram.sendMessage(ctx.chat.id, `Disponível apenas para ADM`);
+    }
 })
 
 // action para cadastrar API
@@ -243,7 +233,7 @@ async function start(ctx) {
 
         const banner = "Bem - vindo! ";
         const padding = ''.repeat(Math.floor((process.stdout.columns - banner.length) / 2));
-        const centeredbanner = padding + banner;
+        const center = padding + banner;
         const message = `${ctx.message.from.first_name}  \nUse o comando /help para ver a lista de comandos ^^`;
         const imgPath = './assets/img/001.jpg';
         const menu = {
@@ -254,7 +244,7 @@ async function start(ctx) {
                 [{ text: "Excluir Canais", callback_data: 'del' }]
             ]
         };
-        ctx.replyWithPhoto({ source: imgPath }, { caption: centeredbanner + message, reply_markup: menu });
+        ctx.replyWithPhoto({ source: imgPath }, { caption: center + message, reply_markup: menu });
 
         if (tipo == 'private') {
             users.insereUser(ctx.from.first_name, ctx.from.username, ctx.from.id, tipo);
